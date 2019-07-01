@@ -269,3 +269,197 @@ ORDER BY column1 [ASC|DESC], column2 [ASC|DESC],...
     6 rows in set (0.00 sec)
 
 */
+
+/* Using BETWEEN operator */
+The BETWEEN operator is a logical operator that allows you to specify whether a value in a range or not. 
+The BETWEEN operator is often used in the WHERE clause of the SELECT, UPDATE, and DELETE statements
+
+SELECT 
+    productCode, 
+    productName, 
+    buyPrice
+FROM
+    products
+WHERE
+    buyPrice BETWEEN 90 AND 100;
+
+/*              OUTPUT      
+    MariaDB [events]> SELECT user_id,user_firstname,user_lastname FROM users WHERE user_id BETWEEN 2 AND 10;
+    +---------+----------------+---------------+
+    | user_id | user_firstname | user_lastname |
+    +---------+----------------+---------------+
+    |       2 | Divya          | Rile          |
+    |       3 | Shamim         | Shaik         |
+    |       4 | David          | Wasawa        |
+    |       9 | Franky         | Martin        |
+    |      10 | Lloyd          | D'souza       |
+    +---------+----------------+---------------+
+    5 rows in set (0.00 sec)
+
+    MariaDB [events]> SELECT user_id,user_firstname,user_lastname FROM users WHERE user_id BETWEEN 2 AND 7;
+    +---------+----------------+---------------+
+    | user_id | user_firstname | user_lastname |
+    +---------+----------------+---------------+
+    |       2 | Divya          | Rile          |
+    |       3 | Shamim         | Shaik         |
+    |       4 | David          | Wasawa        |
+    +---------+----------------+---------------+
+    3 rows in set (0.00 sec)
+*/
+
+SELECT 
+    productCode, 
+    productName, 
+    buyPrice
+FROM
+    products
+WHERE
+    buyPrice NOT BETWEEN 20 AND 100;
+
+-- When you use the BETWEEN operator with date values, 
+-- to get the best result, 
+-- you should use the type cast to explicitly convert the type of column or expression to the DATE type.
+
+SELECT 
+   orderNumber,
+   requiredDate,
+   status
+FROM 
+   orders
+WHERE 
+   requireddate BETWEEN 
+     CAST('2003-01-01' AS DATE) AND 
+     CAST('2003-01-31' AS DATE);
+
+-- Because the data type of the required date column is DATE 
+-- so we used the CAST operator to convert the literal strings ‘2003-01-01 ‘ and ‘2003-12-31 ‘ to the DATE values.
+
+
+/* Using Likes Operator */
+-- The LIKE operator is a logical operator that tests whether a string contains a specified pattern or not. 
+
+-- The LIKE operator is used in the WHERE clause of the SELECT , DELETE, and UPDATE statements to filter data based on patterns.
+
+-- MySQL provides two wildcard characters for constructing patterns: percentage % and underscore _ .
+
+-- 1) The percentage ( % ) wildcard matches any string of zero or more characters.
+-- For example, s% matches any string starts with the character s such as sun and six.
+
+-- 2) The underscore ( _ ) wildcard matches any single character.
+-- For example, The se_ matches any string starts with  se and is followed by any character such as see and sea.
+
+/*      OUTPUT      
+    MariaDB [events]> SELECT user_id,user_firstname,user_mobile_no FROM users WHERE user_mobile_no LIKE "%99";
+    +---------+----------------+----------------+
+    | user_id | user_firstname | user_mobile_no |
+    +---------+----------------+----------------+
+    |       1 | Sonu           | 9999999999     |
+    +---------+----------------+----------------+
+    1 row in set (0.00 sec)
+
+    MariaDB [events]> SELECT user_id,user_firstname,user_mobile_no FROM users WHERE user_mobile_no LIKE "99%";
+    +---------+----------------+----------------+
+    | user_id | user_firstname | user_mobile_no |
+    +---------+----------------+----------------+
+    |       9 | Franky         | 9999876587     |
+    |       1 | Sonu           | 9999999999     |
+    +---------+----------------+----------------+
+    2 rows in set (0.00 sec)
+
+    MariaDB [events]> SELECT user_firstname FROM users WHERE user_firstname LIKE "D%";
+    +----------------+
+    | user_firstname |
+    +----------------+
+    | Divya          |
+    | David          |
+    +----------------+
+    2 rows in set (0.00 sec)
+
+    MariaDB [events]> SELECT user_firstname FROM users WHERE user_firstname LIKE "%D";
+    +----------------+
+    | user_firstname |
+    +----------------+
+    | David          |
+    | Lloyd          |
+    +----------------+
+    2 rows in set (0.00 sec)
+*/
+
+B) Using MySQL LIKE with underscore( _ ) wildcard examples
+To find employees whose first names start with  T , end with m, and contain any single character between 
+e.g., Tom , Tim, you use the underscore (_) wildcard to construct the pattern as follows:
+
+SELECT 
+    employeeNumber, 
+    lastName, 
+    firstName
+FROM
+    employees
+WHERE
+    firstname LIKE 'T_m';
+
+
+/* Using LIMIT operator */
+The LIMIT clause is used in the SELECT statement to constrain the number of rows in a result set. 
+The LIMIT clause accepts one or two arguments. The values of both arguments must be zero or positive integers.
+
+SELECT 
+    column1,column2,...
+FROM
+    table_namw
+LIMIT offset , count;
+
+SELECT 
+    column1,column2,...
+FROM
+    table
+LIMIT N
+
+For example, this query selects the first 10 customers:
+
+SELECT
+ customernumber,
+ customername,
+ creditlimit
+FROM
+ customers
+LIMIT 10;
+
+-- Using MySQL LIMIT to get the highest and lowest values
+The LIMIT clause often used with the ORDER BY clause.
+First, you use the ORDER BY  clause to sort the result set based on certain criteria and then you use the LIMIT clause to find the lowest or highest values.
+
+-- To get TOP 5 Rankers
+SELECT
+ customernumber,
+ customername,
+ creditlimit
+FROM
+ customers
+ORDER BY
+ creditlimit DESC
+LIMIT 5;
+
+-- TO get top low rankers
+SELECT
+ customernumber,
+ customername,
+ creditlimit
+FROM
+ customers
+ORDER BY
+ creditlimit ASC
+LIMIT 5;
+
+-- Using MySQL LIMIT to get the nth highest value
+-- One of the toughest questions in MySQL is to select the nth highest values in a result set e.g., select the second (or nth) most expensive product, which you cannot use MAX or MIN functions to answer. However, you can use MySQL LIMIT to answer those kinds of questions.
+
+-- First, sort the result set in descending order.
+-- Second, use the LIMIT clause to get the nth most expensive product.
+
+SELECT 
+    select_list
+FROM
+    table
+ORDER BY sort_expression DESC
+LIMIT nth-1, count;
